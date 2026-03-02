@@ -10,7 +10,7 @@ constexpr int MAX_MAGAZINE = 12;
 static constexpr float HIT_RADIUS = 0.55f;
 
 // Ajuste fino: alcance máximo do tiro no mundo
-static constexpr float MAX_RANGE  = 17.0f;
+static constexpr float MAX_RANGE  = 20.0f;
 
 static bool rayCircleIntersectXZ(
     float ox, float oz,     // origem do raio
