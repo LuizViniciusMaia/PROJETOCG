@@ -90,9 +90,10 @@ static void checkPortal(float px, float pz)
 
     char c = data[tz][tx];
 
+    // Debug para saber exatamente o que o personagem está pisando
     static char lastC = 0;
     if (c != lastC) {
-        std::printf("DEBUG tile: '%c' (tx=%d, tz=%d)\n", c, tx, tz);
+        std::printf("DEBUG tile: '%c' (tx=%d, tz=%d) no Mapa %d\n", c, tx, tz, currentMap);
         lastC = c;
     }
 
@@ -105,19 +106,24 @@ static void checkPortal(float px, float pz)
 
             std::printf("DEBUG: PORTAL ATIVADO! Indo para mapa %d\n", currentMap);
 
-            if (currentMap == 2)
+            if (currentMap == 2) {
                 gameInitLevel("maps/map2.txt");
-            else if (currentMap == 3)
+                portalUsed = false; // Reset para permitir transição no próximo mapa
+            }
+            else if (currentMap == 3) {
                 gameInitLevel("maps/map3.txt");
+                portalUsed = false; // Reset para permitir transição no próximo mapa
+            }
             else if (currentMap > 3)
             {
-                std::printf("DEBUG: VITORIA!\n");
+                std::printf("DEBUG: VITORIA DETECTADA!\n");
                 gameSetState(GameState::VITORIA);
             }
         }
     }
     else
     {
+        // Só permite usar o portal novamente se o jogador sair de cima dele
         portalUsed = false;
     }
 }
