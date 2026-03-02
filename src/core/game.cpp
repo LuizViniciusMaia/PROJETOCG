@@ -134,6 +134,31 @@ bool gameInit(const char *mapPath)
     return true;
 }
 
+// --- TROCA DE NÍVEL (PORTAL) ---
+void gameInitLevel(const char *mapPath)
+{
+    // Limpa entidades do nível anterior
+    gLevel.enemies.clear();
+    gLevel.items.clear();
+
+    // Carrega o novo mapa
+    if (!loadLevel(gLevel, mapPath, GameConfig::TILE_SIZE))
+    {
+        std::printf("ERRO: nao foi possivel carregar o mapa: %s\n", mapPath);
+        return;
+    }
+
+    // Reinicia o áudio para o novo nível
+    audioInit(gAudioSys, gLevel);
+
+    // Reposiciona o jogador no spawn do novo mapa
+    applySpawn(gLevel, camX, camZ);
+    camY = GameConfig::PLAYER_EYE_Y;
+
+    // Mantém vida/ammo do jogador (ele "atravessou" o portal)
+    // Se quiser resetar, basta chamar gameReset() aqui também
+}
+
 // Reinicia o jogo
 void gameReset()
 {
@@ -146,7 +171,7 @@ void gameReset()
 
     g.weapon.state = WeaponState::W_IDLE;
     g.weapon.timer = 0.0f;
-    // Respawna o jogador
+
     applySpawn(gLevel, camX, camZ);
 }
 
@@ -154,11 +179,8 @@ void gameUpdate(float dt)
 {
     g.time += dt;
 
-    // 1. SE NÃO ESTIVER JOGANDO, NÃO RODA A LÓGICA DO JOGO
     if (g.state != GameState::JOGANDO)
-    {
         return;
-    }
 
     atualizaMovimento();
 
@@ -191,7 +213,6 @@ void gameUpdate(float dt)
     updateEntities(dt);
     updateWeaponAnim(dt);
 
-    // 3. CHECAGEM DE GAME OVER
     if (g.player.health <= 0)
     {
         g.state = GameState::GAME_OVER;
@@ -199,85 +220,60 @@ void gameUpdate(float dt)
     }
 }
 
-// Função auxiliar para desenhar o mundo 3D (Inimigos, Mapa, Céu)
+// Função auxiliar para desenhar o mundo 3D
 void drawWorld3D()
 {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // LIGAR O 3D
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
 
-    // Configuração da Câmera
-    float radYaw = yaw * 3.14159265f / 180.0f;
+    float radYaw   = yaw   * 3.14159265f / 180.0f;
     float radPitch = pitch * 3.14159265f / 180.0f;
     float dirX = cosf(radPitch) * sinf(radYaw);
     float dirY = sinf(radPitch);
     float dirZ = -cosf(radPitch) * cosf(radYaw);
     gluLookAt(camX, camY, camZ, camX + dirX, camY + dirY, camZ + dirZ, 0.0f, 1.0f, 0.0f);
 
-    // Desenha o cenário
     setSunDirectionEachFrame();
     drawSkydome(camX, camY, camZ, g.r);
     drawLevel(gLevel.map, camX, camZ, dirX, dirZ, g.r, g.time);
     drawEntities(gLevel.enemies, gLevel.items, camX, camZ, dirX, dirZ, g.r);
 }
 
-// FUNÇÃO PRINCIPAL DE DESENHO (REFATORADA: usa menuRender / pauseMenuRender / hudRenderAll)
 void gameRender()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Monta o estado do HUD a partir das variáveis globais do jogo
     HudState hs;
     hs.playerHealth = g.player.health;
-    hs.currentAmmo = g.player.currentAmmo;
-    hs.reserveAmmo = g.player.reserveAmmo;
-    hs.damageAlpha = g.player.damageAlpha;
-    hs.healthAlpha = g.player.healthAlpha;
-    hs.weaponState = g.weapon.state;
+    hs.currentAmmo  = g.player.currentAmmo;
+    hs.reserveAmmo  = g.player.reserveAmmo;
+    hs.damageAlpha  = g.player.damageAlpha;
+    hs.healthAlpha  = g.player.healthAlpha;
+    hs.weaponState  = g.weapon.state;
 
-    // --- ESTADO: MENU INICIAL ---
     if (g.state == GameState::MENU_INICIAL)
     {
-        // menuRender já cuida do fogo (update + render)
         menuRender(janelaW, janelaH, g.time, "", "Pressione ENTER para Jogar", g.r);
     }
-    // --- ESTADO: GAME OVER ---
     else if (g.state == GameState::GAME_OVER)
     {
-        // Fundo 3D congelado
         drawWorld3D();
-
-        // OVERLAY DO MELT por cima do jogo
-        // menuMeltRenderOverlay(janelaW, janelaH, g.time);
-
-        // Tela do game over por cima (com fogo)
         menuRender(janelaW, janelaH, g.time, "GAME OVER", "Pressione ENTER para Reiniciar", g.r);
     }
-    // --- ESTADO: PAUSADO ---
     else if (g.state == GameState::PAUSADO)
     {
-        // 1) Mundo 3D congelado
         drawWorld3D();
-
-        // 2) HUD normal (arma + barra + mira + overlays)
         hudRenderAll(janelaW, janelaH, gHudTex, hs, true, true, true);
-
-        // 3) Menu escuro por cima
         pauseMenuRender(janelaW, janelaH, g.time);
     }
-    // --- ESTADO: JOGANDO ---
     else // JOGANDO
     {
-        // 1) Mundo 3D
         drawWorld3D();
-
-        // 2) HUD completo
         hudRenderAll(janelaW, janelaH, gHudTex, hs, true, true, true);
-
         menuMeltRenderOverlay(janelaW, janelaH, g.time);
     }
 

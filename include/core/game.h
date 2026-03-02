@@ -5,25 +5,23 @@
 #include "level/level.h"
 #include "audio/audio_system.h"
 
+// --- Acesso global ao nível e contexto ---
 Level &gameLevel();
+GameContext &gameContext();
+AudioSystem &gameAudio();
 
-// Estado do jogo
+// --- Estado do jogo ---
 GameState gameGetState();
 void gameSetState(GameState s);
 void gameTogglePause();
 
-// Acesso controlado ao Level (se alguém ainda precisar)
-Level &gameLevel();
-
-GameContext& gameContext();
-AudioSystem& gameAudio(); 
-
-// Fluxo principal
-bool gameInit(const char *mapPath);
+// --- Fluxo principal ---
+bool gameInit(const char *mapPath);   // Inicialização completa (primeira vez)
+void gameInitLevel(const char *mapPath); // Troca de nível (portal)
 void gameUpdate(float dt);
 void gameRender();
 void gameReset();
 
-// Ações do player
+// --- Ações do player ---
 void playerTryAttack();
 void playerTryReload();
