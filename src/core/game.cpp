@@ -236,7 +236,7 @@ void gameRender()
 
     if (g.state == GameState::MENU_INICIAL)
     {
-        menuRender(janelaW, janelaH, g.time, "", "Pressione ENTER para Jogar", g.r);
+        menuRender(janelaW, janelaH, g.time, "", "Macapa City foi invadida, lute para sobreviver! Pressione ENTER para Jogar", g.r);
     }
     else if (g.state == GameState::GAME_OVER)
     {
@@ -246,7 +246,7 @@ void gameRender()
     else if (g.state == GameState::VITORIA)
     {
         drawWorld3D();
-        menuRender(janelaW, janelaH, g.time, "VOCE VENCEU!", "Pressione ENTER para o Menu", g.r);
+        menuRender(janelaW, janelaH, g.time, "VOCE CONSEGUIU ESCAPAR DE MACAPA! ", "Pressione ENTER para o Menu", g.r);
     }
     else if (g.state == GameState::PAUSADO)
     {

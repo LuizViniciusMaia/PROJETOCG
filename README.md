@@ -1,12 +1,3 @@
-❤️ Nicolas ❤️ PARABÉNS AOS QUE ESTÃO LISTADOS, E SEU GRUPO, COMO COLABORADORES NESTE REPOSITÓRIO
-
-
-# ODEIOS
-- ODEIO DÁRIO
-- ODEIO HELOYSA
-- ODEIO AUZIER
-- ODEIO KELVIN
-
 # DoomLike OpenGL Project
 
 Este projeto utiliza **OpenGL (pipeline fixo + GLSL 1.20)** para renderização,  
@@ -84,6 +75,7 @@ A cena pode ser explorada em primeira pessoa, com movimentação típica de FPS 
 |-------|------|
 | **Alt + Enter** | Alterna entre tela cheia e modo janela |
 | **ESC** | Encerra o programa |
+| **P** | Pausar o game |
 
 ---
 

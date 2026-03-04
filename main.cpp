@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(janelaW, janelaH);
-    glutCreateWindow("Agora é DOOM");
+    glutCreateWindow("Zombies Wasteland");
 
     GLenum err = glewInit();
     if (err != GLEW_OK)
