@@ -4,8 +4,7 @@ Este projeto utiliza **OpenGL (pipeline fixo + GLSL 1.20)** para renderização,
 **GLUT** para gerenciamento de janela/entrada e **GLEW** para carregar funções modernas  
 como shaders, VBOs e extensões necessárias.
 
-## 🎥 Demonstração
-https://github.com/user-attachments/assets/be16fdec-675c-429a-895a-5aeb3071632c
+
 
 ---
 
@@ -167,4 +166,5 @@ Define uma zona próxima ao jogador (em tiles) onde o culling angular é desativ
 
 gCullMaxDistTiles
 Define a distância máxima de renderização (em tiles). Objetos além desse raio não são renderizados. Se for 0, não há limite de distância.
+
 
